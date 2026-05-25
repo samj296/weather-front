@@ -19,11 +19,9 @@ import { useEffect, useState } from 'react';
         //     setAboutCity("")
         // };
 
-
-
 function City({city}){
     const [temp, setTemp] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const API_KEY = import.meta.env.VITE_WEATHERAPIKEY;
     //here I pull the temp from the link that I got from the assignment
 
@@ -31,7 +29,7 @@ function City({city}){
     //Here I will fetch the about city from wikipedia
     
     useEffect(() => {
-        if(!city) {
+        if(!city || !city.lat || !city.lon) {
             setTemp(null)
             return
         };
@@ -39,10 +37,11 @@ function City({city}){
         setAboutCity("");
         async function fetchWeather(){
             try{
-                const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+                
+                const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`;
                 const response = await fetch(URL)
                 const data = await response.json();
-                if(data.cod ==="404"){
+                if(data.cod === 404){
                     setTemp(null);
                     setAboutCity("City not found")
                     return;
@@ -66,12 +65,12 @@ function City({city}){
         <Card sx={{ maxWidth: 345 }}>
             <CardActionArea>
                     <Typography variant='h3'>
-                        {loading? "Loading": temp !==null ? `${temp}°C`: "--"}
+                        {loading? "loading...": temp !==null ? `${temp}°C`: "--"}
 
                     </Typography>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        {city || "Select a city"}
+                        {city ? city.display_name : "Select a city"}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {aboutCity}                       
