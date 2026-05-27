@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
         // if(city === "kelowna"){
@@ -20,17 +21,19 @@ import { useEffect, useState } from 'react';
         // };
 
 function City({city}){
-    const [temp, setTemp] = useState(null);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [cityData, setCityData] = useState(null);
+    const [wikiUrl, setWikiUrl] = useState("")
     const API_KEY = import.meta.env.VITE_WEATHERAPIKEY;
     //here I pull the temp from the link that I got from the assignment
-
+    
     const [aboutCity, setAboutCity] = useState("")
     //Here I will fetch the about city from wikipedia
     
     useEffect(() => {
         if(!city || !city.lat || !city.lon) {
-            setTemp(null)
+            setCityData(null)
             return
         };
         setLoading(true);
@@ -39,15 +42,16 @@ function City({city}){
             try{
                 
                 const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`;
-                const response = await fetch(URL)
+                setWikiUrl(`https://en.wikipedia.org/api/rest_v1/page/summary/${city.name}`);
+                const response = await fetch(URL);
                 const data = await response.json();
                 if(data.cod === 404){
-                    setTemp(null);
+                    setCityData(null);
                     setAboutCity("City not found")
                     return;
                 };
-                setTemp(data.main.temp);
-                setAboutCity(data.weather[0].description);
+                setAboutCity(`${data.weather[0].description}`);
+                setCityData(data);
 
             }catch(err){
                 setAboutCity(err.message);
@@ -58,16 +62,36 @@ function City({city}){
         }
         fetchWeather();
         
-    },[city])
+    },[city]);
+
+    function handleClick(){
+        navigate("/wiki", {state:{wikiUrl: wikiUrl, city: city}});
+    };
     
 
     return(
-        <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-                    <Typography variant='h3'>
-                        {loading? "loading...": temp !==null ? `${temp}°C`: "--"}
-
+        <Card sx={{ minWidth: 275 }}>
+            <CardActionArea
+                onClick={() => handleClick()}
+            >
+                    <Typography variant='h4'
+                    gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}
+                    style={{whiteSpace:"pre-line"}}>
+                        {loading? "loading...": cityData !== null ? `Temp \n ${cityData["main"]["temp"]}°C \n`:  "Temp \n -- \n"}
                     </Typography>
+                    <Typography variant='h4'
+                    style={{whiteSpace:"pre-line"}}>
+                        {loading? "Feels like" : cityData !== null ? `Feels-like \n ${cityData["main"]["feels_like"]}°C \n` : `Feels like \n -- \n`}    
+                    </Typography>
+                    <Typography variant='h4'
+                    style={{whiteSpace:"pre-line"}}>
+                        {loading? "Min Temp" : cityData !== null ? `Min-Temp \n ${cityData["main"]["temp_min"]}°C \n`: "Min-Temp \n -- \n"}
+                    </Typography>
+                    <Typography variant='h4'
+                    style={{whiteSpace:"pre-line"}}>
+                        {loading? "Max-Tep" : cityData !==null ? `Max-Temp \n ${cityData["main"]["temp_max"]}°C \n`: "Max-Temp \n --"}
+                    </Typography>
+                        
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {city ? city.display_name : "Select a city"}

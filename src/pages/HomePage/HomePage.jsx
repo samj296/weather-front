@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import City from "../component/Weather";
-import { Card, CardActionArea } from "@mui/material";
+import { Card, CardActionArea, unstable_ClassNameGenerator } from "@mui/material";
 import { api } from "../../utils/api";
 import CityList from "../component/CityList";
-// https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5
+
 
 
 function HomePage(){
     const [city, setCity] = useState("")
     const [loading, setLoading] = useState(false);
     const [searchCity, setSearchCity] = useState("")
-    const [cityList, setCityList] = useState([]);
+    const [cityList, setCityList] = useState(null);
+    const navigate = useNavigate();
+    const {state} = useLocation();
     
     
     async function handleSubmit(e){
@@ -34,16 +37,21 @@ function HomePage(){
                     {
                         headers: {"User-Agent": "WeatherAppStudentProject/1.0 (sam_joseph@live.com)"}
                 })
-                console.log(res);
                 return res;
             }catch(err){
-                alert(`Some error has occure - ${err}`)
+                alert(`Unable to fetch the weather - ${err}`)
             }
     };
 
+    useEffect(() =>{
+        if(state?.city){
+            setCity(state.city);
+        }
+    },[state]);
+
     useEffect(()=>{
             if(!searchCity){
-                setCityList("")
+                setCityList(null)
             };
 
             const timer = setTimeout(() => {
@@ -56,41 +64,44 @@ function HomePage(){
     
     return(
         <div>
-            <div>
-                <Card>
+            
+                <Card sx={{margin:5}}>
                     
                         <h1>Welcome to Weather App</h1>
-                    
-                    
-                </Card>
-            </div>
-            
-            <div>
-                <Card>
-                    
-                        <form onSubmit= {handleSubmit}>
+                     <form onSubmit= {handleSubmit}>
                             <input 
                             placeholder="Enter the city name"
                             onChange={(e)=> {
                                 setSearchCity(e.target.value);
                             }}
                             />
+
+                            <p>
+                                {cityList? "Select City from the list below": ""}
+                           </p>
                             <CityList
                             list={cityList}
                             onSelect={(selectedCity) => {
                                 setCity(selectedCity);
                                 setSearchCity("");
-                                setCityList([]);
+                                setCityList(null);
                             }}/>
-                            <p>{city ? city.display_name : "Select City"}</p>
+                           
+                           
+                            
+                            <p>
+                                {city ? city.display_name : "Search City"}
+                            </p>
                     
-                        </form>
-                        
+                        </form>  
                 </Card>
-            </div>
+            
+            <Card sx={{margin:5}}>
+                <City city={city}/>
+            </Card>
+                
             
             
-            <City city={city}/>
         </div>
     )
 };
