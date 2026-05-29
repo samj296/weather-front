@@ -2,6 +2,8 @@ import { Card, CardActionArea, Typography } from "@mui/material";
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../../utils/api";
+import { ozzWiki } from "../../data/fantasyCity";
+import styles from "../CardStyle.module.css"
 
 function WikiPage(){
     const navigate = useNavigate();
@@ -14,11 +16,17 @@ function WikiPage(){
         async function fetchWiki(){
                 setLoading(true);
             try{
-                const data = await api(
+                
+                if(url === "ozz"){
+                    setWikiInfo(ozzWiki);
+
+                }else{
+                    const data = await api(
                     url,
                     {method: "GET"}
-                )
-                setWikiInfo(data)
+                    )
+                    setWikiInfo(data)
+                }
             }catch(err){
                 alert(`Unable to fetch the info about the city - ${err}`)
             }finally{
@@ -36,7 +44,9 @@ function WikiPage(){
    return(
         <div>
             {loading && <Typography>Loading...</Typography>}
-            <Card>
+            <Card
+                className={styles.card}
+            >
                 <CardActionArea
                     onClick={handleClick}
                 >
@@ -52,7 +62,9 @@ function WikiPage(){
                     </Typography>
                 </CardActionArea>
             </Card>
-            <Card>
+            <Card
+                className={styles.card}
+            >
                     {wikiInfo?.originalimage?.source && (
                     <img
                         src={wikiInfo.originalimage.source}

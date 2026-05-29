@@ -7,6 +7,8 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ozzWeather } from '../../data/fantasyCity';
+import styles from "../CardStyle.module.css"
 
 
         // if(city === "kelowna"){
@@ -32,7 +34,7 @@ function City({city}){
     //Here I will fetch the about city from wikipedia
     
     useEffect(() => {
-        if(!city || !city.lat || !city.lon) {
+        if(!city || !city.lat === undefined || !city.lon === undefined) {
             setCityData(null)
             return
         };
@@ -40,11 +42,17 @@ function City({city}){
         setAboutCity("");
         async function fetchWeather(){
             try{
-                
-                const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`;
-                setWikiUrl(`https://en.wikipedia.org/api/rest_v1/page/summary/${city.name}`);
-                const response = await fetch(URL);
-                const data = await response.json();
+                let data;
+                if(city?.customCity){
+                    data = ozzWeather;
+                    setWikiUrl("ozz")
+                }else{
+                    const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${API_KEY}&units=metric`;
+                    setWikiUrl(`https://en.wikipedia.org/api/rest_v1/page/summary/${city.name}`);
+                    const response = await fetch(URL);
+                    data = await response.json();
+                }
+               
                 if(data.cod === 404){
                     setCityData(null);
                     setAboutCity("City not found")
@@ -70,7 +78,9 @@ function City({city}){
     
 
     return(
-        <Card sx={{ minWidth: 275 }}>
+        <Card
+            className={styles.card}
+        >
             <CardActionArea
                 onClick={() => handleClick()}
             >

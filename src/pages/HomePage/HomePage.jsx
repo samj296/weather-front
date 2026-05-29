@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import City from "../component/Weather";
-import { Card, CardActionArea, unstable_ClassNameGenerator } from "@mui/material";
+import { Button, Card, CardActionArea, unstable_ClassNameGenerator } from "@mui/material";
 import { api } from "../../utils/api";
 import CityList from "../component/CityList";
-
+import { ozzCity } from "../../data/fantasyCity";
+import styles from "../CardStyle.module.css"
 
 
 function HomePage(){
@@ -19,14 +20,22 @@ function HomePage(){
     async function handleSubmit(e){
         e.preventDefault();
             setLoading(true)
+            
             if(!searchCity || searchCity === ""){
                 setSearchCity("")
                 return;
             };
+            
             const res = await fetchCity(searchCity)
             setLoading(false);
             setCityList(res);
         
+    };
+
+    function cityOfOzz(){
+        setCity(ozzCity);
+        setSearchCity("");
+        setCityList(null);
     };
 
     async function fetchCity(cityName){
@@ -60,14 +69,23 @@ function HomePage(){
             return () => clearTimeout(timer);
         },[searchCity]);
 
+    
 
     
     return(
         <div>
             
-                <Card sx={{margin:5}}>
+            
+                <Card 
+                    className={styles.card}
+                >
                     
                         <h1>Welcome to Weather App</h1>
+                        <Button
+                            onClick={cityOfOzz}
+                        >
+                            Visit the city of OZZ
+                        </Button>
                      <form onSubmit= {handleSubmit}>
                             <input 
                             placeholder="Enter the city name"
@@ -96,7 +114,9 @@ function HomePage(){
                         </form>  
                 </Card>
             
-            <Card sx={{margin:5}}>
+            <Card 
+                className={styles.card}
+            >
                 <City city={city}/>
             </Card>
                 
