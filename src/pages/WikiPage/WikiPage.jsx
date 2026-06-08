@@ -1,4 +1,4 @@
-import { Card, CardActionArea, Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../../utils/api";
@@ -44,35 +44,37 @@ function WikiPage(){
    return(
         <div>
             {loading && <Typography>Loading...</Typography>}
-            <Card
+            <Container
                 className={styles.card}
+                onClick={handleClick}
             >
-                <CardActionArea
-                    onClick={handleClick}
-                >
                     <Typography variant = "h3">
                         {wikiInfo? wikiInfo["title"]: ""}
                     </Typography>
                     <Typography variant="h4">About</Typography>
-                    <Typography variant = "p">
+                    <p>
 
                         {/* This is the modern way of writing */}
                         {wikiInfo?.extract}
 
-                    </Typography>
-                </CardActionArea>
-            </Card>
-            <Card
-                className={styles.card}
-            >
-                    {wikiInfo?.originalimage?.source && (
-                    <img
-                        src={wikiInfo.originalimage.source}
-                        alt={wikiInfo.title}
-                        className="image"
-                    />
-                )}
-            </Card>
+                    </p>
+                
+            </Container>
+            {wikiInfo?.originalimage?.source &&(
+                    <Container
+                        className={styles.card}
+                        onClick={handleClick}
+                    >
+                            
+                            <img
+                                src={wikiInfo.originalimage.source}
+                                alt={wikiInfo.title}
+                                className="image"
+                            />
+            
+                    </Container>
+            )}
+            
         </div>
    ) 
 };

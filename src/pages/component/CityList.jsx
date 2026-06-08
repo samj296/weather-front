@@ -6,7 +6,8 @@ import Button from '@mui/material/Button';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import { useEffect, useState } from 'react';
-import { Box, ListItemButton } from '@mui/material';
+import { Box, Container, ListItemButton } from '@mui/material';
+import styles from "../CardStyle.module.css"
 
 
         // if(city === "kelowna"){
@@ -40,24 +41,29 @@ function CityList({list, onSelect}){
     
 
     return(
-        <Card>
-            {!Array.isArray(cityList) || cityList.length === 0 ? (
-                null
-            ) : (
-                cityList.map(item =>(
-                // <li key = {item.place_id}>
-                //     {item.display_name}
-                // </li>
-                <Box sx={{width: '100%', maxWidth:360, bgcolor: 'background.paper'}} key = {item.place_id}>
-                    <ListItemButton 
-                    key = {item.place_id}
-                    onClick={() => onSelect(item)}>
-                        {item.display_name}
-                    </ListItemButton>
-                </Box>
-            ))
-        )}
-        </Card>
+        
+            <ul>
+                    {!Array.isArray(cityList) || cityList.length === 0 ? (
+                    null
+                ) : (
+                    cityList.map(item =>(
+                    // <li key = {item.place_id}>
+                    //     {item.display_name}
+                    // </li>
+                    <li  
+                        key = {item.place_id}
+                    >
+                        <ListItemButton 
+                        key = {item.place_id}
+                        onClick={() => onSelect(item)}>
+                            {item.display_name}
+                        </ListItemButton>
+                    </li>
+                ))
+                    )}
+            </ul>
+            
+        
     )
 }
 

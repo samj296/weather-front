@@ -1,14 +1,10 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ozzWeather } from '../../data/fantasyCity';
 import styles from "../CardStyle.module.css"
+import { Container } from '@mui/material';
 
 
         // if(city === "kelowna"){
@@ -78,14 +74,14 @@ function City({city}){
     
 
     return(
-        <Card
-            className={styles.card}
-        >
-            <CardActionArea
+        
+            
+        
+            <Container
                 onClick={() => handleClick()}
+                
             >
                     <Typography variant='h4'
-                    gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}
                     style={{whiteSpace:"pre-line"}}>
                         {loading? "loading...": cityData !== null ? `Temp \n ${cityData["main"]["temp"]}°C \n`:  "Temp \n -- \n"}
                     </Typography>
@@ -101,17 +97,17 @@ function City({city}){
                     style={{whiteSpace:"pre-line"}}>
                         {loading? "Max-Tep" : cityData !==null ? `Max-Temp \n ${cityData["main"]["temp_max"]}°C \n`: "Max-Temp \n --"}
                     </Typography>
-                        
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                        {city ? city.display_name : "Select a city"}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+
+                    <Typography gutterBottom variant="h4">
                         {aboutCity}                       
                     </Typography>
-                </CardContent>
-            </CardActionArea>
-        </Card>
+                        
+                    <Typography gutterBottom variant="h5">
+                        {city ? city.display_name : "Select a city"}
+                    </Typography>
+                    
+            </Container>
+    
     )
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import City from "../component/Weather";
-import { Button, Card, CardActionArea, unstable_ClassNameGenerator } from "@mui/material";
+import Weather from "../component/Weather";
+import {  Container } from "@mui/material";
 import { api } from "../../utils/api";
 import CityList from "../component/CityList";
 import { ozzCity } from "../../data/fantasyCity";
@@ -22,7 +22,8 @@ function HomePage(){
             setLoading(true)
             
             if(!searchCity || searchCity === ""){
-                setSearchCity("")
+                setLoading(false);
+                setSearchCity("");
                 return;
             };
             
@@ -61,6 +62,7 @@ function HomePage(){
     useEffect(()=>{
             if(!searchCity){
                 setCityList(null)
+                return;
             };
 
             const timer = setTimeout(() => {
@@ -76,22 +78,27 @@ function HomePage(){
         <div>
             
             
-                <Card 
+                <Container 
                     className={styles.card}
+                    sx={{padding: 2}}
                 >
                     
-                        <h1>Welcome to Weather App</h1>
-                        <Button
+                        <h1
+                            className={styles.text}
+                        >Welcome to Weather App</h1>
+                        <button
                             onClick={cityOfOzz}
+                            className={styles.btn}
                         >
-                            Visit the city of OZZ
-                        </Button>
+                           🏢 Visit the city of OZZ
+                        </button>
                      <form onSubmit= {handleSubmit}>
                             <input 
                             placeholder="Enter the city name"
                             onChange={(e)=> {
-                                setSearchCity(e.target.value);
+                                setSearchCity(e.target.value.trim());
                             }}
+                            className={styles.input}
                             />
 
                             <p>
@@ -112,13 +119,14 @@ function HomePage(){
                             </p>
                     
                         </form>  
-                </Card>
+                </Container>
             
-            <Card 
+            <Container
                 className={styles.card}
+                sx={{padding: 2}}
             >
-                <City city={city}/>
-            </Card>
+                <Weather city={city}/>
+            </Container>
                 
             
             

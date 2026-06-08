@@ -76,6 +76,7 @@ WEATHER-FRONT (ROOT folder)
 | ├      | Alt + 195 |
 | ─      | Alt + 196 |
 | │      | Alt + 179 |
+
 # Methods to view the project
 
 ## Offline Method
